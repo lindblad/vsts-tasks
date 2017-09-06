@@ -9,8 +9,7 @@ export function GetRegistries(npmrc: string): string[] {
     let config = ini.parse(fs.readFileSync(npmrc).toString());
 
     for (let key in config) {
-        let colonIndex = key.indexOf(':');
-        if (key.substring(colonIndex + 1).toLowerCase() === 'registry') {
+        if (key.toLowerCase().startsWith('registry')){
             config[key] = NormalizeRegistry(config[key]);
             registries.push(config[key]);
         }
@@ -21,10 +20,9 @@ export function GetRegistries(npmrc: string): string[] {
     return registries;
 }
 
-export function NormalizeRegistry(registry: string): string {
-    if (registry) {
-        registry = registry.slice(-1) !== '/' ? registry + '/' : registry;
+export function NormalizeRegistry(registry) {
+    if ( registry && !registry.endsWith('/') ) {
+        registry += '/';
     }
-
     return registry;
 }
